@@ -1,0 +1,69 @@
+# ============================================================
+# STRATÉGIE ALLOWLIST : tout est exclu par défaut, on ré-active
+# explicitement (avec !) ce qui doit être publié.
+#
+# C'est plus sûr qu'une denylist : si demain Bryan ajoute un
+# nouveau fichier confidentiel, il est exclu automatiquement.
+# ============================================================
+
+# 1) On exclut absolument tout
+*
+
+# 2) On ré-active la racine et les fichiers / dossiers à publier
+!.gitignore
+!README.md
+!requirements.txt
+!Fiche FFE.command
+
+# 3) Scripts du pipeline (intégralement)
+!scripts/
+!scripts/**
+
+# 4) Documentation métier — uniquement les fichiers publics
+!compréhension métier/
+!compréhension métier/01_relation_cheval_cavalier.md
+!compréhension métier/02_probleme_niveau_epreuve.md
+!compréhension métier/03_probleme_hauteur_reconstruite.md
+!compréhension métier/04_analyse_variables_raw.md
+!compréhension métier/04_analyse_variables_raw.html
+!compréhension métier/05_codes_sans_hauteur_SO.md
+!compréhension métier/06_features_engineering_plan.md
+!compréhension métier/07_inventaire_donnees.md
+!compréhension métier/09_catalogue_features.md
+!compréhension métier/12_sources_litterature.md
+!compréhension métier/13_limites_methodologiques.md
+!compréhension métier/14_validation_modele.md
+!compréhension métier/17_annexe_fiches_rapport.md
+!compréhension métier/18_annexe_applications_rapport.md
+!compréhension métier/19_annexe_glossaire_rapport.md
+!compréhension métier/20_annexe_features_rapport.md
+# Note : 00 (journal), 08 (mails FFE), 10/11 (briefs), 15 (trame),
+# 16 (annexe code obsolète) ne sont PAS ré-activés.
+
+# 5) Données — uniquement le dataset synthétique + figures publiables
+!data/
+!data/master/
+!data/master/master_dataset_synthetic.parquet
+!data/master/figures_rapport/
+# Figures générales du rapport (méthodologie, résultats)
+!data/master/figures_rapport/architecture_hurdle.png
+!data/master/figures_rapport/boxplot_robustesse.png
+!data/master/figures_rapport/couverture_conformal.png
+!data/master/figures_rapport/distribution_cible.png
+!data/master/figures_rapport/importance_features_top15.png
+!data/master/figures_rapport/mae_par_tranche.png
+!data/master/figures_rapport/modele_gagnant_par_tranche.png
+!data/master/figures_rapport/residus_histogramme.png
+!data/master/figures_rapport/residus_qqplot.png
+!data/master/figures_rapport/split_temporel.png
+# Les 5 fiches du rapport — SIRE déjà rendus publics via le PDF.
+# Les autres fiches générées lors des tests (4 chevaux train/valid) restent locales.
+!data/master/figures_rapport/fiche_47237708P.png
+!data/master/figures_rapport/fiche_13417805D.png
+!data/master/figures_rapport/fiche_13414483P.png
+!data/master/figures_rapport/fiche_60049124M.png
+!data/master/figures_rapport/fiche_47261754C.png
+!data/master/figures_rapport/fiches_planche.png
+# sires_chevaux.csv (47k SIRE + hauteurs réelles) : NON publié — accord FFE.
+# sires_demo.txt (25 SIRE) : NON publié — utilisateur a le mini-dataset synthétique
+# et peut lister les SIRE fictifs via `python3 scripts/fiche.py --list-test`.
