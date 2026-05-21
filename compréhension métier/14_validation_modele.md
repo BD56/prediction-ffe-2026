@@ -8,7 +8,7 @@ L'objectif est de **prouver la rigueur** de la démarche : tous les choix sont s
 
 ## 1. Validation des choix méthodologiques fondamentaux
 
-### 1.1 Choix de la cible — `hauteur_max_validée`
+### 1.1 Choix de la cible : `hauteur_max_validée`
 
 **Décision** : prédire la hauteur maximale d'obstacle à laquelle un cheval a participé **au moins 3 fois** sur sa carrière complète.
 
@@ -28,8 +28,8 @@ L'objectif est de **prouver la rigueur** de la démarche : tous les choix sont s
 **Décision** : chevaux nés 2006-2013, hors poneys, discipline SO uniquement, ≥ 10 participations.
 
 **Validation des bornes** :
-- ✅ **Borne inférieure 2006** : permet d'observer ≥ 12 ans de carrière jusqu'à 2025 (suffisant pour valider la cible — médiane d'âge de validation = 8 ans)
-- ✅ **Borne supérieure 2013** : **validée empiriquement**, seuls 5% des chevaux dépassent leur cible après 12 ans
+- ✅ **Borne inférieure 2006** : permet d'observer ≥ 12 ans de carrière jusqu'à 2025 (suffisant pour valider la cible, médiane d'âge de validation = 8 ans)
+- ✅ **Borne supérieure 2013** : **validée empiriquement** : seuls 5% des chevaux dépassent leur cible après 12 ans
 - ✅ **Filtre poney** : grille de hauteur fondamentalement différente, cohérent avec littérature (Warmblood uniquement chez Chapard, Sanchez-Guerrero, Viklund)
 - ✅ **Filtre SO** : 95,8% des données, sujet centré sur le SO
 
@@ -143,7 +143,7 @@ Piste suggérée par avis IA externe. Validation expérimentale (script 45) :
 | RF + NaN=−9 | 6,49 | gain microscopique |
 | HistGradientBoosting (NaN natif) | 8,67 | catastrophique sans tuning |
 
-→ **L'idée du NaN comme signal métier est valide théoriquement**, mais l'impact réel est marginal sur notre dataset (top features ont peu de NaN). Validation par expérimentation.
+→ **L'idée du NaN comme signal métier est valide théoriquement** : mais l'impact réel est marginal sur notre dataset (top features ont peu de NaN). Validation par expérimentation.
 
 ---
 
@@ -159,7 +159,7 @@ Piste suggérée par avis IA externe. Validation expérimentale (script 45) :
 | Protocole | MAE moyenne Hurdle | Std | MAE ≥1,45m | Std |
 |---|---|---|---|---|
 | A (4 splits) | 6,98 | ±0,47 | **8,42** | **±0,65** |
-| B (random) | 6,28 | — | 6,71 | — |
+| B (random) | 6,28 |, | 6,71 |, |
 | C (5-fold) | 6,58 | ±0,65 | **7,98** | **±0,81** |
 
 **Validation** :
@@ -189,11 +189,11 @@ Pour chaque cheval test, on identifie quel modèle minimise l'erreur. Comptage p
 
 ### 4.1 Diagnostic des résidus (script 48 angle 1)
 
-**Hétéroscédasticité** : corrélation de Pearson `|résidu| vs prédiction` ≈ **−0,09** pour les 3 modèles → variance des résidus **stable**, modèle bien spécifié.
+**Hétéroscédasticité** : corrélation de Pearson `|résidu| vs prédiction` ≈ **−0,09** pour les 3 modèles → variance des résidus **stable** : modèle bien spécifié.
 
-**Distribution** : test de D'Agostino-Pearson rejette la normalité (p < 1e-13) pour tous les modèles. Kurtosis positive (0,44-0,75) → **queues lourdes**, cohérent avec la présence d'outliers métier identifiés (~5%).
+**Distribution** : test de D'Agostino-Pearson rejette la normalité (p < 1e-13) pour tous les modèles. Kurtosis positive (0,44-0,75) → **queues lourdes** : cohérent avec la présence d'outliers métier identifiés (~5%).
 
-**Conséquence** : les métriques utilisées (MAE, RMSE, R², Spearman) sont **non-paramétriques**, leur validité ne dépend pas de la normalité. Cf. discussion §"Distribution des résidus" dans le journal.
+**Conséquence** : les métriques utilisées (MAE, RMSE, R², Spearman) sont **non-paramétriques** : leur validité ne dépend pas de la normalité. Cf. discussion §"Distribution des résidus" dans le journal.
 
 ### 4.2 Biais signé moyen
 
@@ -203,7 +203,7 @@ Pour chaque cheval test, on identifie quel modèle minimise l'erreur. Comptage p
 | Hurdle | **−2,68** |
 | Stacking + Calib | +0,88 |
 
-**Validation** : Hurdle a un biais systématique de **sur-estimation de 2,68 cm**, identifié et documenté ([13_limites §11.3](13_limites_methodologiques.md)). RF et Stacking ont un biais proche de zéro. Le biais Hurdle est le prix à payer pour son avantage sur les tops.
+**Validation** : Hurdle a un biais systématique de **sur-estimation de 2,68 cm** : identifié et documenté ([13_limites §11.3](13_limites_methodologiques.md)). RF et Stacking ont un biais proche de zéro. Le biais Hurdle est le prix à payer pour son avantage sur les tops.
 
 ### 4.3 Corrélations Pearson et Spearman
 
@@ -218,7 +218,7 @@ Pour chaque cheval test, on identifie quel modèle minimise l'erreur. Comptage p
 
 ## 5. Validation de la quantification d'incertitude (intervalles de confiance)
 
-### 5.1 Échec du bootstrap naïf (script 49) — leçon méthodologique
+### 5.1 Échec du bootstrap naïf (script 49) : leçon méthodologique
 
 Premier essai (K=50 itérations) → couverture réelle **8-10%** pour un IC nominal à 95%.
 
@@ -298,7 +298,7 @@ Vérification empirique du piège Zero-Inflation **par niveau d'agrégation** :
 
 ### 6.5 Mère écartée empiriquement (Famille 8)
 
-Vérification : seuls **2,7% des chevaux** ont une mère avec ≥5 autres descendants dans la cohorte (vs 86,7% pour le père). Raison biologique : jument = 10-15 poulains max sur une carrière vs étalon = centaines/milliers. Le target encoding sur la mère serait peu fiable → **écartée pour cause de couverture insuffisante**, et non par défaut méthodologique.
+Vérification : seuls **2,7% des chevaux** ont une mère avec ≥5 autres descendants dans la cohorte (vs 86,7% pour le père). Raison biologique : jument = 10-15 poulains max sur une carrière vs étalon = centaines/milliers. Le target encoding sur la mère serait peu fiable → **écartée pour cause de couverture insuffisante** : et non par défaut méthodologique.
 
 ### 6.6 Couverture LOO pedigree
 
@@ -322,8 +322,8 @@ Source : [12_sources_litterature.md](12_sources_litterature.md).
 |---|---|---|
 | **Chapard 2023** (Adjusted Fence Height) ✅ vérifié | Cible `hauteur_max_validée` est l'opérationnalisation de l'AFH de Chapard |
 | **Chapard 2024** (Genetic parameters jumping) ✅ vérifié | Importance race + pedigree confirmée dans nos importances Hurdle |
-| **Sanchez-Guerrero** | Effet cavalier crucial — confirmé chez nous (Famille 7) |
-| **Viklund** | Warmblood uniquement — cohérent avec exclusion poneys |
+| **Sanchez-Guerrero** | Effet cavalier crucial, confirmé chez nous (Famille 7) |
+| **Viklund** | Warmblood uniquement, cohérent avec exclusion poneys |
 | **Ricard & Blouin 2011** ⚠ présumé | À vérifier individuellement avant citation finale |
 | **WBFSH** ✅ vérifié | Standard mondial du classement par race |
 
@@ -336,7 +336,7 @@ Source : [12_sources_litterature.md](12_sources_litterature.md).
 ### Target encoding
 
 - **Micci-Barreca (2001)** : technique standard ML pour variables catégorielles à haute cardinalité ✅ vérifié
-- **BLUP / Henderson** : standard généalogie animale — nous l'approchons via target encoding LOO + smoothing, sans modèle mixte complet
+- **BLUP / Henderson** : standard généalogie animale, nous l'approchons via target encoding LOO + smoothing, sans modèle mixte complet
 
 ---
 
@@ -364,7 +364,7 @@ Source : [12_sources_litterature.md](12_sources_litterature.md).
 
 4. *"Aucune des 5 alternatives plus complexes testées (Multi-Hurdle multi-classe, Multi-Hurdle hiérarchique, Stacking enrichi avec Hurdle, transformations cible y²/y³, sample weights variés) ne dépasse Hurdle 2 classes sur la prédiction des hauts niveaux. Le 2-Hurdle est l'optimum empiriquement prouvé."*
 
-5. *"La correction du leakage dans les target encodings a fait passer la MAE apparente de 6,14 à 6,89 cm. Cette correction est documentée et l'impact quantifié — sans elle, les performances rapportées auraient été surévaluées de 12%."*
+5. *"La correction du leakage dans les target encodings a fait passer la MAE apparente de 6,14 à 6,89 cm. Cette correction est documentée et l'impact quantifié, sans elle, les performances rapportées auraient été surévaluées de 12%."*
 
 ---
 

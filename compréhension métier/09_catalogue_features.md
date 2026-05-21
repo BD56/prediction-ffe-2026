@@ -286,7 +286,7 @@ Sauf mention contraire, les features sont calculées sur la **fenêtre 4-7 ans**
 
 ### Convention de stockage
 
-Les features de cette famille sont **stockées en valeurs brutes (€)** dans le master dataset. La transformation `log(GAINS + 1)` standardisée par année sera appliquée **au moment de la modélisation**, pas à la construction.
+Les features de cette famille sont **stockées en valeurs brutes (€)** dans le master dataset. La transformation `log(GAINS + 1)` standardisée par année sera appliquée **au moment de la modélisation** : pas à la construction.
 
 **Justification** :
 - Sépare proprement le stockage des features (valeurs brutes interprétables) de leur transformation pour le modèle
@@ -386,7 +386,7 @@ L'inflation française 2010-2025 (~25-30%) + l'évolution du barème FFE biaisen
 
 ### Décision globale "sans-faute" (2026-05-03)
 
-**La notion de "taux de sans-faute" est abandonnée pour cette famille**, malgré son statut de standard de la littérature équitation (EquiRatings "Clear Rounds", IFCE).
+**La notion de "taux de sans-faute" est abandonnée pour cette famille** : malgré son statut de standard de la littérature équitation (EquiRatings "Clear Rounds", IFCE).
 
 **Raisons** :
 1. **Sémantique non-uniforme de POINTS** : un POINTS = 0 ne signifie pas la même chose en barème A, barème C, ou cycles SHF (Label, Formation, Cycle Libre). `POINTS != SO_POINTS_BAR + SO_TEMPS_BAR` dans 87% des cas.
@@ -441,7 +441,7 @@ L'inflation française 2010-2025 (~25-30%) + l'évolution du barème FFE biaisen
 **Décision** : traitement "en bloc" sans tenter de mapping spéculatif. Conséquences pour la famille placement :
 - Les features de **performance** (médiane, percentile, top X) sont calculées **uniquement sur les vraies places (1-351)**
 - Les codes (≥800) sont comptés à part dans des features dédiées de **non-classement**
-- Pour le calcul du **percentile dans le peloton**, la taille du peloton inclut tous les participants (vrais classés + non-classés), pour ne pas biaiser
+- Pour le calcul du **percentile dans le peloton** : la taille du peloton inclut tous les participants (vrais classés + non-classés), pour ne pas biaiser
 
 ### Features de non-classement
 
@@ -929,9 +929,9 @@ cavalier_*_4_7 = mean(cavalier_score sur participations 4-7 du cheval)
 
 #### Concept
 
-- **Feature A — Fréquence** : taux de participations où le cavalier a gagné (GAINS > 0)
+- **Feature A, Fréquence** : taux de participations où le cavalier a gagné (GAINS > 0)
   → Évite le Zero-Inflation (variable de fréquence pure)
-- **Feature B — Magnitude pure** : `mean(log(GAINS))` calculé **uniquement sur les participations avec GAINS > 0**
+- **Feature B, Magnitude pure** : `mean(log(GAINS))` calculé **uniquement sur les participations avec GAINS > 0**
   → Évite l'aplatissement par les zéros (on filtre AVANT)
   → Garde l'effet log avant agrégation (gère la skewness, Jensen)
 

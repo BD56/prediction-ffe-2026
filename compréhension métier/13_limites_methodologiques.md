@@ -181,7 +181,7 @@ Plusieurs choix méthodologiques pris **sans validation métier**. À mentionner
 
 ### Convention de transformation des gains
 
-- Décision : stocker `GAINS` en **valeurs brutes (€)**, transformation `log(GAINS + 1)` standardisée par année appliquée **à la modélisation**
+- Décision : stocker `GAINS` en **valeurs brutes (€)** : transformation `log(GAINS + 1)` standardisée par année appliquée **à la modélisation**
 - Limite : `log(x+1)` introduit une légère déformation pour les petits gains (~11% pour 5€, ~1-3% pour 12-25€)
 - Cohérence : standard Anne Ricard / IFCE
 
@@ -212,11 +212,11 @@ Plusieurs choix méthodologiques pris **sans validation métier**. À mentionner
 ### Hypothèses sémantiques spéculatives (Famille 1 -- Activité)
 
 Plusieurs features sont retenues avec des **interprétations métier non validées empiriquement** :
-- `intensite_moyenne_mensuelle` : interprétée comme *"rythme industriel = risque sanitaire"* — spéculatif
-- `jours_moyens_entre_sorties` : interprétée comme *"rythme d'or = bon"* — spéculatif
-- `ratio_cycle_total` : interprétée comme indicateur de surcharge — spéculatif
+- `intensite_moyenne_mensuelle` : interprétée comme *"rythme industriel = risque sanitaire"*, spéculatif
+- `jours_moyens_entre_sorties` : interprétée comme *"rythme d'or = bon"*, spéculatif
+- `ratio_cycle_total` : interprétée comme indicateur de surcharge, spéculatif
 
-Ces interprétations sont des **hypothèses à tester**, pas des vérités acquises. Le rapport doit présenter ces features comme **signaux candidats** sans imposer leur sens métier.
+Ces interprétations sont des **hypothèses à tester** : pas des vérités acquises. Le rapport doit présenter ces features comme **signaux candidats** sans imposer leur sens métier.
 
 ### Famille 7 percentile : moyenne vs médiane
 
@@ -254,7 +254,7 @@ Source : [01_relation_cheval_cavalier.md](01_relation_cheval_cavalier.md) §6.
 
 - **37% des chevaux n'ont eu qu'un seul cavalier** dans toute leur carrière
 - Pour ces chevaux, il est **impossible de séparer** statistiquement "effet cheval" et "effet cavalier"
-- La performance d'un cheval monté toute sa carrière par un excellent cavalier sera **artificiellement gonflée**, sans qu'on puisse distinguer la part du cheval vs celle du cavalier
+- La performance d'un cheval monté toute sa carrière par un excellent cavalier sera **artificiellement gonflée** : sans qu'on puisse distinguer la part du cheval vs celle du cavalier
 
 **Mitigation appliquée** : Famille 7 (Cavalier) inclut des features décrivant le niveau du cavalier (percentiles, gains positifs) pour que le modèle puisse partiellement compenser. Mais c'est imparfait pour les chevaux à cavalier unique.
 
@@ -276,7 +276,7 @@ Source : [06_features_engineering_plan.md](06_features_engineering_plan.md) §"A
 **Conséquence** : **89,5% des futurs tops (≥1,40m) ne valident leur hauteur qu'après 7 ans**. Notre fenêtre features (4-7 ans) capture donc leur **trajectoire avant la révélation de leur niveau réel**.
 
 - Pour les **chevaux faibles** (≤1,15m) : la cible est connue dès 4-5 ans → leakage partiel possible si on utilise des features dérivées de la hauteur
-- Pour les **chevaux tops** : la cible n'est révélée qu'après 7 ans → notre prédiction repose sur **des signaux précoces faibles**, ce qui explique le **plateau de performance** observé (MAE plancher ~6 cm, R² plafond ~0,57)
+- Pour les **chevaux tops** : la cible n'est révélée qu'après 7 ans → notre prédiction repose sur **des signaux précoces faibles** : ce qui explique le **plateau de performance** observé (MAE plancher ~6 cm, R² plafond ~0,57)
 
 **Conséquence rapport** : *"La fenêtre temporelle features 4-7 ans capture pour l'essentiel le **potentiel** des futurs tops avant que celui-ci ne se révèle. Cette asymétrie (cible connue tôt pour les bas niveaux, tard pour les hauts) impose une limite intrinsèque à la précision prédictive sur les tops."*
 
@@ -286,21 +286,21 @@ Source : [04_analyse_variables_raw.md](04_analyse_variables_raw.md) "Points d'at
 
 Valeurs aberrantes administratives identifiées et **traitées comme NaN** dans le pipeline :
 - **Codes placeholders** : `9999` (POINTS, SO_POINTS_BAR), `1000` (SO_TEMPS), `999` / `999.99` (CE_*)
-- **Valeurs négatives** dans POINTS, SO_POINTS_BAR, CE_POINTSDRESSAGE (pénalités ou corrections administratives — sémantique non documentée)
+- **Valeurs négatives** dans POINTS, SO_POINTS_BAR, CE_POINTSDRESSAGE (pénalités ou corrections administratives, sémantique non documentée)
 - **5 NaN sur DATENAISSANCE** : chevaux sans année de naissance → exclus
 - **12 libellés avec 2 codes d'épreuve différents** : sources potentielles d'incohérence (résolu par jointure majoritaire)
 
-Ces anomalies ont été traitées **avant la construction du master dataset**, mais leur existence souligne la qualité hétérogène des données administratives FFE.
+Ces anomalies ont été traitées **avant la construction du master dataset** : mais leur existence souligne la qualité hétérogène des données administratives FFE.
 
 ---
 
 ## 11. Limites détectées en phase modélisation (mai 2026)
 
-### Plateau de performance — limite irréductible
+### Plateau de performance : limite irréductible
 
 **Observation empirique** : malgré 10+ modèles testés (RF, ElasticNet, XGBoost, CatBoost, Hurdle, Stacking + variantes, Poly40, Multi-Hurdle) et toutes les optimisations méthodologiques (TE corrigé, épuration features, calibration, sample weights), la MAE plafonne autour de **6,28-6,89 cm** et le R² autour de **0,55-0,57**.
 
-**Interprétation** : cette limite est **structurelle au dataset**, pas méthodologique. Elle reflète :
+**Interprétation** : cette limite est **structurelle au dataset** : pas méthodologique. Elle reflète :
 - L'**incertitude irréductible** dans la prédiction (santé, opportunités sportives, qualité cavalier adulte non observables)
 - L'**asymétrie temporelle** décrite en §10 (les tops se révèlent après la fenêtre de features)
 
@@ -314,7 +314,7 @@ Tous les modèles "uniformes" (RF, ElasticNet, etc.) sous-estiment systématique
 
 **Cause** : la fonction de perte (MAE/RMSE) symétrique pénalise pareillement sur- et sous-estimations. Comme les tops ne représentent que 10% du dataset, le modèle "consent" à les sous-estimer pour mieux prédire la majorité.
 
-**Mitigation appliquée** : Hurdle (2 classes) — meilleur modèle pour les tops.
+**Mitigation appliquée** : Hurdle (2 classes), meilleur modèle pour les tops.
 
 ### Défaut Hurdle sur les chevaux peu actifs
 
@@ -330,7 +330,7 @@ Source : [00_journal_decisions.md](00_journal_decisions.md) §"ANALYSE DES RÉSI
 
 Environ **5% des chevaux** ont des résidus > 3σ. Pattern dominant identifié : **chevaux avec très peu de participations sur 7 ans** mais profil race/pedigree "haut". Hypothèse : chevaux à **parcours interrompu** (trauma précoce, problèmes vétérinaires, vente/changement de propriétaire).
 
-**Limite irréductible** : aucun modèle ne capte ces cas sans variable explicite **santé / continuité de carrière**, qui n'est pas dans le dataset.
+**Limite irréductible** : aucun modèle ne capte ces cas sans variable explicite **santé / continuité de carrière** : qui n'est pas dans le dataset.
 
 ### Non-normalité des résidus
 
@@ -386,11 +386,11 @@ Le plateau de performance ne sera pas franchi sans nouvelles features. Variables
 
 ### Approches modélisation non testées
 
-1. **Modèles mixtes avec effet aléatoire cavalier** (BLUP-style, approche Chapard/Sanchez-Guerrero) — permettrait de démixer cheval/cavalier proprement et corrigerait le biais des 37% à cavalier unique
-2. **Hurdle avec garde-fou activité** — désactiver le mécanisme tops sur `nb_participations_7ans < 5` pour corriger le biais Q1
-3. **Mixture of Experts** avec gating network softmax — généralisation continue de Hurdle (transition douce au lieu de mélange binaire)
-4. **Poids temporels** (piste IA externe non testée) — pondérer le train par la récence de génération
-5. **Locally weighted conformal V3** — IC adaptatif basé sur KNN novelty detection (mesure de "à quel point ce cheval ressemble aux chevaux du train")
+1. **Modèles mixtes avec effet aléatoire cavalier** (BLUP-style, approche Chapard/Sanchez-Guerrero), permettrait de démixer cheval/cavalier proprement et corrigerait le biais des 37% à cavalier unique
+2. **Hurdle avec garde-fou activité** : désactiver le mécanisme tops sur `nb_participations_7ans < 5` pour corriger le biais Q1
+3. **Mixture of Experts** avec gating network softmax, généralisation continue de Hurdle (transition douce au lieu de mélange binaire)
+4. **Poids temporels** (piste IA externe non testée), pondérer le train par la récence de génération
+5. **Locally weighted conformal V3** : IC adaptatif basé sur KNN novelty detection (mesure de "à quel point ce cheval ressemble aux chevaux du train")
 
 ### Étude complémentaire CE (Concours Complet)
 
@@ -427,7 +427,7 @@ Section "Limites" à inclure dans le rapport final, articulée autour de :
 
 ### Limites détectées en modélisation (§11)
 
-11. **Plateau de performance** : MAE ~6,3 cm, R² ~0,57 — limite irréductible des données
+11. **Plateau de performance** : MAE ~6,3 cm, R² ~0,57, limite irréductible des données
 12. **Régression vers la moyenne** : sous-estimation systématique des tops (jusqu'à −13,9 cm)
 13. **Défaut Hurdle sur les chevaux peu actifs** (biais −5,13 cm sur Q1 d'activité)
 14. **Outliers à parcours interrompu** (~5%, non-prédictibles sans variable santé)

@@ -1,17 +1,17 @@
-# Annexe C — Cadre d'usage opérationnel
+# Annexe C : Cadre d'usage opérationnel
 
-La fiche de prédiction (annexe B) n'a de valeur que si elle déclenche une action différente de celle que l'utilisateur aurait prise sans le modèle. Cette annexe propose un **cadre de lecture** des deux principales grandeurs affichées (P_top et largeur d'IC) en regard de décisions métier typiques. Les seuils proposés sont des **points de fonctionnement suggérés**, calibrés sur les performances observées (MAE = 6,9 cm sur les tops, couverture empirique 95,3 %), et restent à **valider en condition réelle** par une étude d'usage avec des acteurs de la filière.
+La fiche de prédiction (annexe B) n'a de valeur que si elle déclenche une action différente de celle que l'utilisateur aurait prise sans le modèle. Cette annexe propose un **cadre de lecture** des deux principales grandeurs affichées (P_top et largeur d'IC) en regard de décisions métier typiques. Les seuils proposés sont des **points de fonctionnement suggérés** : calibrés sur les performances observées (MAE = 6,9 cm sur les tops, couverture empirique 95,3 %), et restent à **valider en condition réelle** par une étude d'usage avec des acteurs de la filière.
 
 ---
 
-## C.1 — Grille de lecture
+## C.1 : Grille de lecture
 
 | Profil de fiche | P_top | Largeur IC | Cadre de décision suggéré |
 |---|---|---|---|
 | Top confirmé | ≥ 0,70 | ≤ 25 cm | Orientation haut niveau assumée (cycle classique, achat ferme envisageable) |
 | Plafond bas confirmé | < 0,30 | ≤ 25 cm | Orientation amateur / loisir, programme allégé |
 | Zone incertaine | [0,30 ; 0,70] | tout | **Reporter la décision** : attendre une saison supplémentaire avant engagement coûteux |
-| Confiance dégradée | tout | > 30 cm | Le modèle signale qu'il ne sait pas — décision à la main de l'expert humain |
+| Confiance dégradée | tout | > 30 cm | Le modèle signale qu'il ne sait pas, décision à la main de l'expert humain |
 
 Trois principes encadrent la lecture de cette grille :
 
@@ -23,7 +23,7 @@ Trois principes encadrent la lecture de cette grille :
 
 ---
 
-## C.2 — Limites du périmètre opérationnel
+## C.2 : Limites du périmètre opérationnel
 
 Quatre restrictions doivent être explicitées pour éviter toute sur-interprétation :
 

@@ -1,4 +1,4 @@
-# Annexe E — Récapitulatif des features
+# Annexe E : Récapitulatif des features
 
 Le master dataset final contient **156 features numériques** (deux booléens initialement comptés sont écartés par filtrage de type au moment du fit), construites à partir de la cohorte T1 + N1 ≥ 10 (47 617 chevaux nés 2006-2013). Les features sont organisées en **sept familles** thématiques, chacune codée par un préfixe `f<N>_` permettant un suivi de bout en bout dans le pipeline.
 
@@ -6,7 +6,7 @@ L'objectif de cette annexe est triple : donner une vue d'ensemble du périmètre
 
 ---
 
-## E.1 — Vue synthétique par famille
+## E.1 : Vue synthétique par famille
 
 | Famille | Préfixe | Thème | Nb features | Logique métier |
 |---|---|---|---|---|
@@ -23,51 +23,51 @@ L'objectif de cette annexe est triple : donner une vue d'ensemble du périmètre
 
 ---
 
-## E.2 — Description détaillée par famille
+## E.2 : Description détaillée par famille
 
-### F1 — Activité et volume (16 features)
+### F1 : Activité et volume (16 features)
 
 Mesure l'**intensité d'engagement** du cheval sur la fenêtre 4-7 ans : nombre total de participations, nombre de saisons actives, présence d'une saison blanche, écart-type du volume entre saisons. Variables typiques : `f1_nb_participations_4_7`, `f1_nb_saisons_actives`, `f1_a_saison_blanche_4_7`.
 
 **Hypothèse métier** : un cheval orienté haut niveau cumule un volume d'épreuves régulier ; les profils amateurs ont souvent une trajectoire plus irrégulière.
 
-### F2 — Gains (8 features)
+### F2 : Gains (8 features)
 
 Capture la **performance financière** : gains totaux, gains par épreuve, log-gains, évolution inter-saisons. Variables typiques : `f2_gains_7ans`, `f2_gains_par_evenement_4_7`, `f2_evolution_gains_7_6`.
 
 **Hypothèse métier** : les gains sont une mesure indirecte du niveau (allocations indexées sur la hauteur de l'épreuve). C'est l'une des deux familles les plus prédictives globalement (cf. E.3).
 
-### F3 — Placement sportif (75 features — la plus grosse)
+### F3 : Placement sportif (75 features : la plus grosse)
 
 Décrit la **performance relative** du cheval dans ses épreuves : percentile des partants, ratios sans-faute, parcours classés, médiane / écart-type de classement, évolution annuelle de ces grandeurs. Variables typiques : `f3_percentile_partants_median_7ans`, `f3_percentile_partants_std_7ans`, `f3_ratio_sans_faute_7ans`.
 
 **Hypothèse métier** : un cheval *progressif* (qui améliore son percentile au fil des saisons) signale un potentiel d'évolution non encore exploité. La forte cardinalité de la famille s'explique par la déclinaison systématique en quatre dimensions (statistique × tranche d'âge × catégorie × type d'épreuve).
 
-### F5 — Niveau / type d'épreuves (12 features)
+### F5 : Niveau / type d'épreuves (12 features)
 
 Synthétise la **gamme de hauteurs courues** : hauteur moyenne, hauteur maximale tentée, proportion d'épreuves Pro / Amateur / Club. Variables typiques : `f5_hauteur_moyenne_7ans`, `f5_part_pro_4_7`, `f5_hauteur_max_tentee_6ans`.
 
 **Risque de fuite contrôlé** : la *hauteur max tentée* n'est pas la cible (`hauteur_max_validée`), car la cible exige trois participations à la hauteur. Une « tentative ponctuelle » est donc une information licite, sans risque de leak.
 
-### F7 — Cavalier (38 features)
+### F7 : Cavalier (38 features)
 
 Décrit le **niveau du ou des cavaliers** ayant monté le cheval : nombre de cavaliers distincts, log-gains moyens du cavalier principal, expérience cumulée du cavalier, percentile du cavalier dans la population. Variables typiques : `f7_nb_participations_cavalier_passe3_7ans`, `f7_cavalier_mean_log_gains_pos_passe3_7ans`.
 
 **Hypothèse métier** : un bon cavalier valorise un cheval à potentiel. Cette famille porte le plus gros risque de **target encoding** (le cavalier ayant monté ce cheval est aussi évalué sur ce cheval), traité par leave-one-out + smoothing bayésien (annexe A.2 / GitHub).
 
-### F8 — Pedigree (6 features)
+### F8 : Pedigree (6 features)
 
 Caractérise l'**ascendance** du cheval : performance moyenne des descendants du père, performance moyenne des descendants du grand-père maternel. Variables typiques : `f8_pere_target_encoded_LOO`, `f8_pere_mean_gains_LOO`, `f8_gp_maternel_mean_percentile_partants_LOO`.
 
 **Choix méthodologique** : seuls père et grand-père maternel sont retenus (la mère seule est trop rarement renseignée pour être exploitable, et la couverture chute fortement au-delà de la 2ème génération).
 
-### F10 — Race / stud-book (3 features)
+### F10 : Race / stud-book (3 features)
 
 Target encoding par stud-book : `f10_race_target_encoded_LOO`, `f10_race_mean_gains_LOO`, `f10_race_mean_percentile_partants_LOO`. Famille très compacte mais **rang 1 d'importance pour le régresseur des tops** (cf. E.3).
 
 ---
 
-## E.3 — Top 15 features par importance
+## E.3 : Top 15 features par importance
 
 Le tableau ci-dessous reporte les 15 features les plus importantes au sens de la **mean decrease in impurity** (Random Forest), comparées entre les deux régresseurs du Hurdle : celui qui prédit la masse de la population (« default ») et celui qui prédit les tops (≥ 1,40 m). La colonne **Δ rang** = rang_default − rang_tops.
 
@@ -99,7 +99,7 @@ Le tableau ci-dessous reporte les 15 features les plus importantes au sens de la
 
 ---
 
-## E.4 — Note méthodologique
+## E.4 : Note méthodologique
 
 Le décompte de 156 features actives est issu d'une **épuration en deux temps** (cf. section 3.4 du rapport principal) :
 
