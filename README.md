@@ -1,8 +1,8 @@
 # Prédiction du plafond sportif des chevaux de Saut d'Obstacles
 
-Projet tuteuré — Master 1 Data Science et Modélisation Statistique, Université Bretagne Sud (Vannes), promotion 2025-2026, en partenariat avec la **Fédération Française d'Équitation**.
+Projet tuteuré, Master 1 Data Science et Modélisation Statistique, Université Bretagne Sud (Vannes), promotion 2025-2026, en partenariat avec la **Fédération Française d'Équitation**.
 
-Ce dépôt contient le code source du pipeline de prédiction et la documentation méthodologique du projet. Les **données FFE elles-mêmes ne sont pas publiées** pour des raisons de confidentialité ; un dataset synthétique de 20 chevaux fictifs est fourni pour valider l'exécutabilité du code.
+Ce dépôt contient le code source du pipeline de prédiction et la documentation méthodologique du projet. Les **données FFE elles-mêmes ne sont pas publiées** pour des raisons de confidentialité. Un dataset synthétique de 20 chevaux fictifs est fourni pour valider l'exécutabilité du code.
 
 ---
 
@@ -46,7 +46,7 @@ IC_95%(x)   = ŷ_Hurdle(x) ± q_norm · σ(x)
 │   ├── 27_hurdle_model.py       Modèle Hurdle de référence
 │   ├── 50_conformal_prediction.py    Couche conformelle
 │   ├── 51_locally_adaptive_conformal.py
-│   ├── fiche.py                 CLI : génère une fiche pour un cheval donné
+│   ├── fiche.py                 CLI, génère une fiche pour un cheval donné
 │   ├── fiche_app.py             Application GUI (tkinter)
 │   └── generate_synthetic_data.py    Génère des chevaux fictifs
 ├── data/master/
@@ -58,7 +58,7 @@ IC_95%(x)   = ŷ_Hurdle(x) ± q_norm · σ(x)
 │   ├── 12_sources_litterature.md
 │   ├── 13_limites_methodologiques.md
 │   ├── 14_validation_modele.md
-│   └── 17–20_annexe_*.md        Annexes du rapport final
+│   └── 17 à 20 annexe_*.md      Annexes du rapport final
 ├── Fiche FFE.command            Lanceur macOS (dialogue natif)
 ├── requirements.txt
 └── README.md
@@ -80,7 +80,7 @@ pip install -r requirements.txt
 
 ## Utilisation
 
-### Mode 1 — Génération d'une fiche pour un cheval
+### Mode 1 : génération d'une fiche pour un cheval
 
 Le script `fiche.py` prend un numéro SIRE en argument, entraîne le modèle au premier appel (~ 15 s, cache sur disque ensuite), et produit une fiche PNG dans `data/master/figures_rapport/fiche_<SIRE>.png`.
 
@@ -96,15 +96,15 @@ python3 scripts/fiche.py --list-test 20
 
 Les 5 SIRE des fiches d'exemple publiées (47237708P, 13417805D, 13414483P, 60049124M, 47261754C) ne sont **pas exploitables** sur le dépôt cloné : leurs features n'existent pas dans le dataset synthétique. Les fiches PNG sont conservées comme illustrations du rapport.
 
-### Mode 2 — Application graphique (macOS)
+### Mode 2 : application graphique (macOS)
 
 Double-cliquer sur `Fiche FFE.command` ouvre un dialogue système qui demande un numéro SIRE, génère la fiche et l'ouvre dans Aperçu. Boucle jusqu'à annulation.
 
-### Mode 3 — Reproductibilité partielle
+### Mode 3 : reproductibilité partielle
 
-Le pipeline est découpé en deux moitiés :
+Le pipeline est découpé en deux moitiés.
 
-**Scripts qui fonctionnent sur le dataset synthétique** (entraînement + prédiction + validation à partir du master déjà construit) :
+**Scripts qui fonctionnent sur le dataset synthétique** (entraînement, prédiction et validation à partir du master déjà construit) :
 
 ```bash
 python3 scripts/27_hurdle_model.py             # entraînement Hurdle
@@ -119,7 +119,7 @@ Les résultats numériques **différeront** de ceux du rapport (20 chevaux ficti
 
 ```
 scripts/00_compute_cible.py          # nécessite ffe_2010-2025_enriched.parquet
-scripts/01_build_famille1.py … 10    # construction des 7 familles de features
+scripts/01_build_famille1.py à 10    # construction des 7 familles de features
 scripts/20_correct_target_encoding.py
 scripts/99_merge_master.py
 scripts/prepare_enriched.py          # construction du enriched depuis CSV bruts
@@ -163,14 +163,14 @@ Les données originelles FFE sont **soumises à un accord de confidentialité** 
 
 ---
 
-## Auteur et encadrement
+## Auteurs et encadrement
 
-**Bryan Desjardins** — M1 Data Science et Modélisation Statistique, UBS Vannes (promo 2025-2026).
+**Bryan Desjardins** et **Julianne Festoc**, M1 Data Science et Modélisation Statistique, UBS Vannes (promo 2025-2026).
 Projet réalisé en partenariat avec la Fédération Française d'Équitation.
 
 ---
 
 ## Licence
 
-Code : **MIT License** (libre réutilisation académique et commerciale).
-Données et résultats numériques publiés dans le rapport : **non redistribuables** sans accord FFE explicite.
+Code sous licence **MIT** (voir le fichier `LICENSE`) : libre réutilisation académique et commerciale avec attribution.
+Les données et résultats numériques publiés dans le rapport ne sont **pas redistribuables** sans accord FFE explicite.

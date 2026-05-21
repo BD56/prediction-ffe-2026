@@ -12,6 +12,7 @@
 # 2) On ré-active la racine et les fichiers / dossiers à publier
 !.gitignore
 !README.md
+!LICENSE
 !requirements.txt
 !Fiche FFE.command
 
