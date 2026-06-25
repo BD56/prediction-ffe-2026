@@ -172,5 +172,6 @@ Projet réalisé en partenariat avec la Fédération Française d'Équitation.
 
 ## Licence
 
-Code sous licence **MIT** (voir le fichier `LICENSE`) : libre réutilisation académique et commerciale avec attribution.
-Les données et résultats numériques publiés dans le rapport ne sont **pas redistribuables** sans accord FFE explicite.
+Code sous licence **MIT** (voir le fichier [`LICENSE`](LICENSE)) : libre réutilisation académique et commerciale avec attribution.
+
+Les données FFE et les résultats numériques publiés dans le rapport ne sont **pas redistribuables** sans accord FFE explicite : voir [`DATA_LICENSE.md`](DATA_LICENSE.md).
