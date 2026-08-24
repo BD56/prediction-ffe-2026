@@ -1,6 +1,6 @@
 # Annexe C : Cadre d'usage opérationnel
 
-La fiche de prédiction (annexe B) n'a de valeur que si elle déclenche une action différente de celle que l'utilisateur aurait prise sans le modèle. Cette annexe propose un **cadre de lecture** des deux principales grandeurs affichées (P_top et largeur d'IC) en regard de décisions métier typiques. Les seuils proposés sont des **points de fonctionnement suggérés** : calibrés sur les performances observées (MAE = 6,9 cm sur les tops, couverture empirique 95,3 %), et restent à **valider en condition réelle** par une étude d'usage avec des acteurs de la filière.
+La fiche de prédiction (annexe B) n'a de valeur que si elle déclenche une action différente de celle que l'utilisateur aurait prise sans le modèle. Cette annexe propose un **cadre de lecture** des deux principales grandeurs affichées (P_top et largeur d'IC) en regard de décisions métier typiques. Les seuils proposés sont des **points de fonctionnement suggérés** : calibrés sur les performances observées (MAE globale 6,89 cm, couverture empirique 94,7 %), et restent à **valider en condition réelle** par une étude d'usage avec des acteurs de la filière.
 
 ---
 

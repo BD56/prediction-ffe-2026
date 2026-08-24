@@ -30,9 +30,10 @@ IC_95%(x)   = ŷ_Hurdle(x) ± q_norm · σ(x)
 - **σ(x)** : écart-type des prédictions entre les 500 arbres, sert à la fois de mesure d'incertitude locale et de score pour l'IC adaptatif.
 
 **Performance globale** (test set n = 5 045) :
-- MAE = 6,9 cm sur les tops (≥ 1,40 m), 4,2 cm en moyenne
-- Couverture empirique de l'IC à 95 % : 95,3 %
-- Largeur médiane de l'IC : 22 cm
+- MAE globale (Hurdle) : **6,89 cm**
+- MAE par tranche : 5,27 cm sur 1,35-1,40 m, **9,46 cm sur ≥ 1,45 m** (le Hurdle est le meilleur modèle testé sur les tops, gain de 3-4 cm face aux baselines)
+- Couverture empirique de l'IC à 95 % : **94,7 %**
+- Largeur de l'IC : moyenne 36 cm, adaptative entre 12 cm (cas faciles) et 58 cm (cas incertains)
 
 ---
 
