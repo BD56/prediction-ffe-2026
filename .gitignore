@@ -39,6 +39,7 @@
 !compréhension métier/18_annexe_applications_rapport.md
 !compréhension métier/19_annexe_glossaire_rapport.md
 !compréhension métier/20_annexe_features_rapport.md
+!compréhension métier/22_correction_incertitude.md
 # Note : 00 (journal), 08 (mails FFE), 10/11 (briefs), 15 (trame),
 # 16 (annexe code obsolète) ne sont PAS ré-activés.
 
@@ -69,3 +70,6 @@
 # sires_chevaux.csv (47k SIRE + hauteurs réelles) : NON publié — accord FFE.
 # sires_demo.txt (25 SIRE) : NON publié — utilisateur a le mini-dataset synthétique
 # et peut lister les SIRE fictifs via `python3 scripts/fiche.py --list-test`.
+
+# Caches Python (scripts/** les réactiverait sinon)
+scripts/__pycache__/

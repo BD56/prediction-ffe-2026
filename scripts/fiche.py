@@ -30,6 +30,9 @@ from utils import INTERMEDIATES_DIR, MASTER_DIR  # noqa: E402
 from produce_fiches_visuelles import COULEUR_FOND_STATUT, COULEUR_STATUT, dessine_fiche  # noqa: E402
 
 CACHE_PATH = INTERMEDIATES_DIR / "hurdle_lac_cache.pkl"
+# Branche correction-incertitude : cache enrichi, ecrit A COTE de l'ancien,
+# qui n'est jamais ecrase. Voir docs/correction-incertitude.md
+CACHE_V2_PATH = INTERMEDIATES_DIR / "hurdle_incertitude_v2_cache.pkl"
 OUT_DIR_DEFAULT = MASTER_DIR / "figures_rapport"
 
 
@@ -138,7 +141,48 @@ def fit_and_cache():
     sigma_hu_t = p_t * sigma_tops_t + (1 - p_t) * sigma_t
     quintile_bounds = np.quantile(sigma_hu_t, [0.20, 0.40, 0.60, 0.80]).tolist()
 
+    # ------------------------------------------------------------------
+    # Correction de l'incertitude (branche correction-incertitude)
+    #
+    # Le score |y - y_hat| / sigma suppose une erreur PROPORTIONNELLE a sigma.
+    # Mesure : la relation est affine avec une ordonnee a l'origine de 3 a 4 cm,
+    # sigma n'explique que 1,4 % de la variance de l'erreur, et la couverture
+    # decroche a 84,7 % sur le quintile de sigma le plus bas -- celui affiche
+    # "5 etoiles". Remplacement du denominateur par une foret predisant
+    # |y - y_hat| a partir des familles f1 (activite) et f5 (type de circuit)
+    # et de sigma. Aucune variable encodee sur la cible, donc aucune fuite.
+    #
+    # Le jeu de validation est coupe en deux : moitie A pour ajuster la foret
+    # d'erreur, moitie B pour calibrer le quantile ET les quintiles d'etoiles.
+    # Les quintiles ne sont donc plus calcules sur le jeu de test, ce qui
+    # corrige au passage une fuite du calibrage d'origine.
+    # ------------------------------------------------------------------
+    err_v = np.abs(y_valid.values - pred_hu_v)
+    cols_f1f5 = [i for i, c in enumerate(feat_cols) if c.startswith(("f1_", "f5_"))]
+    W_v = np.c_[Xva[:, cols_f1f5], sigma_hu_v]
+    perm = np.random.default_rng(42).permutation(len(err_v))
+    demi_A, demi_B = perm[: len(perm) // 2], perm[len(perm) // 2 :]
+    foret_erreur = RandomForestRegressor(
+        n_estimators=250, max_depth=12, min_samples_leaf=20,
+        random_state=42, n_jobs=-1,
+    ).fit(W_v[demi_A], err_v[demi_A])
+    den_v = np.clip(foret_erreur.predict(W_v), 1e-4, None)
+    q_v2 = conformal_quantile(err_v[demi_B] / den_v[demi_B], alpha=0.05)
+    quintile_bounds_v2 = np.quantile(den_v[demi_B], [0.20, 0.40, 0.60, 0.80]).tolist()
+
     CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with open(CACHE_V2_PATH, "wb") as f:
+        pickle.dump({
+            "rf": rf, "clf": clf, "rf_tops": rf_tops,
+            "imputer": imp, "feat_cols": feat_cols,
+            "q_norm": q_norm, "quintile_bounds": quintile_bounds,
+            "foret_erreur": foret_erreur, "cols_f1f5": cols_f1f5,
+            "q_v2": q_v2, "quintile_bounds_v2": quintile_bounds_v2,
+        }, f)
+    print(f"  \u2713 cache corrige ecrit : {CACHE_V2_PATH.name}")
+    print(f"  q corrige = {q_v2:.3f} | quintiles denominateur (cm) = "
+          f"{[round(b_ * 100, 2) for b_ in quintile_bounds_v2]}")
+
     with open(CACHE_PATH, "wb") as f:
         pickle.dump({
             "rf": rf, "clf": clf, "rf_tops": rf_tops,
@@ -151,8 +195,13 @@ def fit_and_cache():
     print(f"  durée : {time.time()-t0:.1f}s")
 
 
-def load_cache():
-    with open(CACHE_PATH, "rb") as f:
+def load_cache(ancien=False):
+    """Charge le cache corrige s'il existe, sinon l'ancien.
+
+    ancien=True force l'ancien calibrage (denominateur = sigma), pour comparer.
+    """
+    chemin = CACHE_PATH if ancien or not CACHE_V2_PATH.exists() else CACHE_V2_PATH
+    with open(chemin, "rb") as f:
         return pickle.load(f)
 
 
@@ -179,20 +228,29 @@ def predict_one(idcheval, cache):
     sigma_tops = float(np.stack([e.predict(x) for e in rf_tops.estimators_]).std(axis=0)[0])
     sigma_hu = p_top * sigma_tops + (1 - p_top) * sigma_default
 
-    q_norm = cache["q_norm"]
-    ic_low = pred_hu - q_norm * sigma_hu
-    ic_high = pred_hu + q_norm * sigma_hu
+    # Denominateur de l'intervalle, selon le cache charge :
+    #   cache corrige -> foret d'erreur sur f1+f5+sigma
+    #   ancien cache  -> sigma seul (conserve pour comparaison)
+    if "foret_erreur" in cache:
+        w = np.c_[x[:, cache["cols_f1f5"]], [[sigma_hu]]]
+        denominateur = float(np.clip(cache["foret_erreur"].predict(w)[0], 1e-4, None))
+        q, qb = cache["q_v2"], cache["quintile_bounds_v2"]
+    else:
+        denominateur = sigma_hu
+        q, qb = cache["q_norm"], cache["quintile_bounds"]
+
+    ic_low = pred_hu - q * denominateur
+    ic_high = pred_hu + q * denominateur
     ic_width_cm = (ic_high - ic_low) * 100
 
-    # Confiance : quintile de σ sur la distribution test set
-    qb = cache["quintile_bounds"]
-    if sigma_hu <= qb[0]:
+    # Confiance en etoiles : quintile du denominateur
+    if denominateur <= qb[0]:
         conf = 5
-    elif sigma_hu <= qb[1]:
+    elif denominateur <= qb[1]:
         conf = 4
-    elif sigma_hu <= qb[2]:
+    elif denominateur <= qb[2]:
         conf = 3
-    elif sigma_hu <= qb[3]:
+    elif denominateur <= qb[3]:
         conf = 2
     else:
         conf = 1
@@ -211,6 +269,7 @@ def predict_one(idcheval, cache):
         "ic_high": round(ic_high, 2),
         "ic_width_cm": round(ic_width_cm, 1),
         "sigma": round(sigma_hu * 100, 2),
+        "denominateur_cm": round(denominateur * 100, 2),
         "confiance": conf,
         "split": split_val,
         "reel": y_real,
@@ -328,11 +387,14 @@ def main():
                         help="Affiche N IDCHEVAL du test set et quitte")
     parser.add_argument("--no-open", action="store_true",
                         help="Ne pas ouvrir le PNG dans l'aperçu après génération")
+    parser.add_argument("--ancien", action="store_true",
+                        help="Utiliser l'ancien calibrage (dénominateur = sigma), "
+                             "pour comparer avec la version corrigée")
     args = parser.parse_args()
 
-    if args.retrain or not CACHE_PATH.exists():
+    if args.retrain or not CACHE_PATH.exists() or not CACHE_V2_PATH.exists():
         fit_and_cache()
-    cache = load_cache()
+    cache = load_cache(ancien=args.ancien)
 
     if args.list_test:
         v2 = pd.read_parquet(_dataset_path())
@@ -363,6 +425,8 @@ def main():
     print(f"  IC 95 %        : [{fiche['ic_low']:.2f} ; {fiche['ic_high']:.2f}]  "
           f"(largeur {fiche['ic_width_cm']:.1f} cm)")
     print(f"  σ local        : {fiche['sigma']:.2f} cm")
+    print(f"  Dénominateur   : {fiche['denominateur_cm']:.2f} cm"
+          f"{'  (= σ, ancien calibrage)' if args.ancien else '  (forêt f1+f5+σ)'}")
     print(f"  Confiance      : {fiche['confiance']}/5")
     if fiche.get("reel") is not None:
         print(f"  Réelle observée: {fiche['reel']:.2f} m  "
